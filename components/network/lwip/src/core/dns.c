@@ -387,6 +387,12 @@ dns_getserver(u8_t numdns)
   }
 }
 
+void
+dns_clear_cache(void)
+{
+  memset(dns_table, 0, sizeof(struct dns_table_entry) * DNS_TABLE_SIZE);
+}
+
 /**
  * The DNS resolver client timer - handle retries and timeouts and should
  * be called every DNS_TMR_INTERVAL milliseconds (every second by default).

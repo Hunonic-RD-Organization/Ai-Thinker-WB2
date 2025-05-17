@@ -112,6 +112,7 @@ err_t            dns_gethostbyname_addrtype(const char *hostname, ip_addr_t *add
                                    dns_found_callback found, void *callback_arg,
                                    u8_t dns_addrtype);
 
+void dns_clear_cache(void);
 
 #if DNS_LOCAL_HOSTLIST
 size_t         dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg);
