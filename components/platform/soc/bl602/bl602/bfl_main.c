@@ -38,10 +38,10 @@
 #ifdef CUSTOM_LOG_IO
 HOSAL_UART_DEV_DECL(uart_stdio, 0, CUSTOM_LOG_TX_IO, CUSTOM_LOG_RX_IO, CUSTOM_LOG_RX_BAUD);
 #else
-HOSAL_UART_DEV_DECL(uart_stdio, 0, 16, 7, 115200);
+HOSAL_UART_DEV_DECL(uart_stdio, 0, 16, 0xFF, 2000000);
 // HOSAL_UART_DEV_DECL(uart_stdio, 0, 2, 4, 921600);
 // HOSAL_UART_DEV_DECL(uart_stdio, 0, 14, 12, 921600);
-// HOSAL_UART_DEV_DECL(uart_stdio, 0, 4, 0xff, 115200);
+// HOSAL_UART_DEV_DECL(uart_stdio, 0, 4, 0xff, 2000000);
 #endif
 
 extern uint8_t _heap_start;
@@ -49,18 +49,19 @@ extern uint8_t _heap_size; // @suppress("Type cannot be resolved")
 extern uint8_t _heap_wifi_start;
 extern uint8_t _heap_wifi_size; // @suppress("Type cannot be resolved")
 static HeapRegion_t xHeapRegions[] =
-{
-        { &_heap_start,  (unsigned int) &_heap_size}, //set on runtime
-        { &_heap_wifi_start, (unsigned int) &_heap_wifi_size },
-        { NULL, 0 }, /* Terminates the array. */
-        { NULL, 0 } /* Terminates the array. */
+    {
+        {&_heap_start, (unsigned int)&_heap_size}, // set on runtime
+        {&_heap_wifi_start, (unsigned int)&_heap_wifi_size},
+        {NULL, 0}, /* Terminates the array. */
+        {NULL, 0}  /* Terminates the array. */
 };
 
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName )
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
     puts("Stack Overflow checked\r\n");
     bl_sys_reset_por();
-    while (1) {
+    while (1)
+    {
         /*empty here*/
     }
 }
@@ -68,8 +69,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName )
 void __attribute__((weak)) vApplicationMallocFailedHook(void)
 {
     printf("Memory Allocate Failed. Current left size is %d bytes\r\n",
-        xPortGetFreeHeapSize()
-    );
+           xPortGetFreeHeapSize());
 #if 0
     while (1) {
         /*empty here*/
@@ -80,8 +80,7 @@ void __attribute__((weak)) vApplicationMallocFailedHook(void)
 void __attribute__((weak)) vApplicationIdleHook(void)
 {
     __asm volatile(
-            "   wfi     "
-    );
+        "   wfi     ");
     /*empty*/
 }
 
@@ -91,7 +90,7 @@ void __attribute__((weak)) vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleT
     function then they must be declared static - otherwise they will be allocated on
     the stack and so not exists after this function exits. */
     static StaticTask_t xIdleTaskTCB;
-    static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+    static StackType_t uxIdleTaskStack[configMINIMAL_STACK_SIZE];
 
     /* Pass out a pointer to the StaticTask_t structure in which the Idle task's
     state will be stored. */
@@ -115,7 +114,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
     function then they must be declared static - otherwise they will be allocated on
     the stack and so not exists after this function exits. */
     static StaticTask_t xTimerTaskTCB;
-    static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
+    static StackType_t uxTimerTaskStack[configTIMER_TASK_STACK_DEPTH];
 
     /* Pass out a pointer to the StaticTask_t structure in which the Timer
     task's state will be stored. */
@@ -130,7 +129,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
     *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
 
-void user_vAssertCalled(void) __attribute__ ((weak, alias ("vAssertCalled")));
+void user_vAssertCalled(void) __attribute__((weak, alias("vAssertCalled")));
 void __attribute__((weak)) vAssertCalled(void)
 {
     taskDISABLE_INTERRUPTS();
@@ -152,14 +151,16 @@ static int get_dts_addr(const char *name, uint32_t *start, uint32_t *off)
     const void *fdt = (const void *)addr;
     uint32_t offset;
 
-    if (!name || !start || !off) {
+    if (!name || !start || !off)
+    {
         return -1;
     }
 
     offset = fdt_subnode_offset(fdt, 0, name);
-    if (offset <= 0) {
-       log_error("%s NULL.\r\n", name);
-       return -1;
+    if (offset <= 0)
+    {
+        log_error("%s NULL.\r\n", name);
+        return -1;
     }
 
     *start = (uint32_t)fdt;
@@ -202,7 +203,8 @@ static void aos_loop_proc(void *pvParameters)
         "uart@4000A100",
     };
 
-    if (0 == get_dts_addr("uart", &fdt, &offset)) {
+    if (0 == get_dts_addr("uart", &fdt, &offset))
+    {
         vfs_uart_init(fdt, offset, uart_node, 2);
     }
 #endif
@@ -218,19 +220,20 @@ static void aos_loop_proc(void *pvParameters)
 #ifdef SYS_AOS_CLI_ENABLE
     int fd_console;
     fd_console = aos_open("/dev/ttyS0", 0);
-    if (fd_console >= 0) {
+    if (fd_console >= 0)
+    {
         printf("Init CLI with event Driven\r\n");
         aos_cli_init(0);
-        aos_poll_read_fd(fd_console, aos_cli_event_cb_read_get(), (void*)0x12345678);
+        aos_poll_read_fd(fd_console, aos_cli_event_cb_read_get(), (void *)0x12345678);
     }
 #endif
 
     xTaskCreate(app_main_entry,
-            (char*)"main",
-            SYS_APP_TASK_STACK_SIZE / sizeof(StackType_t),
-            NULL,
-            SYS_APP_TASK_PRIORITY,
-            NULL);
+                (char *)"main",
+                SYS_APP_TASK_STACK_SIZE / sizeof(StackType_t),
+                NULL,
+                SYS_APP_TASK_PRIORITY,
+                NULL);
 
 #ifdef SYS_AOS_LOOP_ENABLE
     aos_loop_run();
@@ -258,7 +261,6 @@ static void _dump_boot_info(void)
     puts("Build Time: ");
     puts(__TIME__);
     puts("\r\n");
-
 }
 
 static void system_early_init(void)
@@ -290,7 +292,7 @@ void log_port_reset(void)
     cfg.drive = 0;
     cfg.smtCtrl = 1;
     cfg.gpioPin = 16;
-    cfg.gpioFun = GPIO0_FUN_UNUSED3; //all the function number of GPIO is the same, we use def from GPIO0 here
+    cfg.gpioFun = GPIO0_FUN_UNUSED3; // all the function number of GPIO is the same, we use def from GPIO0 here
     cfg.gpioMode = GPIO_MODE_OUTPUT;
     cfg.pullType = GPIO_PULL_NONE;
     GLB_GPIO_Init(&cfg);
@@ -302,16 +304,20 @@ void log_port_reset(void)
 void bfl_main()
 {
     TaskHandle_t aos_loop_proc_task;
-    
+
     bl_sys_early_init();
- 
+
 #ifdef SYS_REBOOT_LOG_DISENABLE
     /*Init UART In the first place*/
     log_port_reset();
 #endif
 
-
+#ifndef PROJECT_HUNONIC_LOG_GPIO
     hosal_uart_init_only_tx(&uart_stdio);
+#else
+    extern void sw_uart_init(void);
+    sw_uart_init();
+#endif
     puts("Starting bl602 now....\r\n");
 
     _dump_boot_info();
@@ -323,8 +329,15 @@ void bfl_main()
     system_early_init();
 
     puts("[OS] Starting aos_loop_proc task...\r\n");
-    xTaskCreate(aos_loop_proc, (char*)"event_loop", 1024, NULL, 15, &aos_loop_proc_task);
+    xTaskCreate(aos_loop_proc, (char *)"event_loop", 1024, NULL, 15, &aos_loop_proc_task);
 
     puts("[OS] Starting OS Scheduler...\r\n");
     vTaskStartScheduler();
+}
+
+void bfl_reinit_tx_uart(void)
+{
+#ifndef PROJECT_HUNONIC_LOG_GPIO
+    hosal_uart_init_only_tx(&uart_stdio);
+#endif
 }

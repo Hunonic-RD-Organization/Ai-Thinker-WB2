@@ -25,7 +25,7 @@
 
 static const char *REQUEST = "GET " WEB_URL " HTTP/1.0\r\n"
                              "Host: " WEB_SERVER "\r\n"
-                             "User-Agent: aithinker wb2 \r\n"
+                             "User-Agent: Ai-WB2 HoloCore \r\n"
                              "\r\n";
 
 static const uint8_t TEST_CERTIFICATE_FILENAME[] = {"-----BEGIN CERTIFICATE-----\r\n"

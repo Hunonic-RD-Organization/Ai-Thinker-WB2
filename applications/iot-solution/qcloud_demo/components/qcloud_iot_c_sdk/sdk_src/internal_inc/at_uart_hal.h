@@ -24,20 +24,22 @@
 /*
  * UART data width
  */
-typedef enum {
-    BAUDRATE_2400    = 2400,
-    BAUDRATE_4800    = 4800,
-    BAUDRATE_9600    = 9600,
-    BAUDRATE_19200   = 19200,
-    BAUDRATE_115200  = 115200,
-    BAUDRATE_921600  = 921600,
-    BAUDRATE_DEFAULT = 115200
+typedef enum
+{
+    BAUDRATE_2400 = 2400,
+    BAUDRATE_4800 = 4800,
+    BAUDRATE_9600 = 9600,
+    BAUDRATE_19200 = 19200,
+    BAUDRATE_115200 = 2000000,
+    BAUDRATE_921600 = 921600,
+    BAUDRATE_DEFAULT = 2000000
 } hal_uart_baudr_t;
 
 /*
  * UART data width
  */
-typedef enum {
+typedef enum
+{
     DATA_WIDTH_5BIT,
     DATA_WIDTH_6BIT,
     DATA_WIDTH_7BIT,
@@ -48,12 +50,17 @@ typedef enum {
 /*
  * UART stop bits
  */
-typedef enum { STOP_BITS_1, STOP_BITS_2 } hal_uart_stop_bits_t;
+typedef enum
+{
+    STOP_BITS_1,
+    STOP_BITS_2
+} hal_uart_stop_bits_t;
 
 /*
  * UART flow control
  */
-typedef enum {
+typedef enum
+{
     FLOW_CONTROL_DISABLED,
     FLOW_CONTROL_CTS,
     FLOW_CONTROL_RTS,
@@ -63,17 +70,28 @@ typedef enum {
 /*
  * UART parity
  */
-typedef enum { NO_PARITY, ODD_PARITY, EVEN_PARITY } hal_uart_parity_t;
+typedef enum
+{
+    NO_PARITY,
+    ODD_PARITY,
+    EVEN_PARITY
+} hal_uart_parity_t;
 
 /*
  * UART mode
  */
-typedef enum { MODE_TX, MODE_RX, MODE_TX_RX } hal_uart_mode_t;
+typedef enum
+{
+    MODE_TX,
+    MODE_RX,
+    MODE_TX_RX
+} hal_uart_mode_t;
 
 /*
  * UART state
  */
-typedef enum {
+typedef enum
+{
     eUNUSED = 0,
     eOPENED = 1,
     eCLOSED = 2,
@@ -82,23 +100,25 @@ typedef enum {
 /*
  * UART configuration
  */
-typedef struct {
-    uint32_t                baud_rate;
-    hal_uart_data_width_t   data_width;
-    hal_uart_parity_t       parity;
-    hal_uart_stop_bits_t    stop_bits;
+typedef struct
+{
+    uint32_t baud_rate;
+    hal_uart_data_width_t data_width;
+    hal_uart_parity_t parity;
+    hal_uart_stop_bits_t stop_bits;
     hal_uart_flow_control_t flow_control;
-    hal_uart_mode_t         mode;
+    hal_uart_mode_t mode;
 } uart_config_t;
 
-typedef struct {
+typedef struct
+{
 #ifdef __linux__
     int fd; /* uart fd */
 #else
     void *uart_handle; /* uart handle,like stm32 UART_HandleTypeDef */
 #endif
-    hal_uart_state_t state;  /* uart state */
-    uart_config_t    config; /* uart config */
+    hal_uart_state_t state; /* uart state */
+    uart_config_t config;   /* uart config */
 } uart_dev_t;
 
 #ifdef __cplusplus

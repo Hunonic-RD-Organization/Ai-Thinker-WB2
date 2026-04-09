@@ -6,45 +6,45 @@
 #include <blog.h>
 #define USER_UNUSED(a) ((void)(a))
 
-
 #ifdef CFG_USE_PSRAM
 
-#define IS_PSARAM(addr) ((addr&0xFF000000) == 0x26000000 || \
-                        (addr&0xFF000000) == 0x24000000 )
+#define IS_PSARAM(addr) ((addr & 0xFF000000) == 0x26000000 || \
+                         (addr & 0xFF000000) == 0x24000000)
 
 extern void update_sp(void);
 extern void resotre_sp(void);
 
 /** pvPortMalloc/vPortFree is dedicated for SRAM heap access */
-extern void *pvPortMalloc( size_t xSize );
-extern void vPortFree( void *pv );
+extern void *pvPortMalloc(size_t xSize);
+extern void vPortFree(void *pv);
 
 #ifndef PSRAM_TEMP_STACK_SIZE
 #define PSRAM_TEMP_STACK_SIZE 128
 #endif
-static __attribute__ ((aligned(16))) StackType_t __spn[PSRAM_TEMP_STACK_SIZE] = {0};
-StackType_t* const __psram_taskstack_spn_top = (StackType_t*)(__spn + PSRAM_TEMP_STACK_SIZE) - 1;
+static __attribute__((aligned(16))) StackType_t __spn[PSRAM_TEMP_STACK_SIZE] = {0};
+StackType_t *const __psram_taskstack_spn_top = (StackType_t *)(__spn + PSRAM_TEMP_STACK_SIZE) - 1;
 uint32_t psram_taskstack_spo = 0;
 #endif
 
-static struct {
+static struct
+{
     uint32_t magic;
     SPI_Flash_Cfg_Type flashCfg;
-} boot2_flashCfg; //XXX Dont change the name of varaible, since we refer this boot2_partition_table in linker script
+} boot2_flashCfg; // XXX Dont change the name of varaible, since we refer this boot2_partition_table in linker script
 
+__attribute__((always_inline)) __STATIC_INLINE uint32_t __get_SP(void)
+{
+    register uint32_t result;
 
-__attribute__((always_inline)) __STATIC_INLINE uint32_t __get_SP(void) 
-{ 
-  register uint32_t result; 
-
-  __ASM volatile ("mv %0, sp\n" : "=r" (result) ); 
-  return(result); 
+    __ASM volatile("mv %0, sp\n" : "=r"(result));
+    return (result);
 }
 
 int bl_flash_erase(uint32_t addr, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
@@ -62,15 +62,18 @@ int bl_flash_erase(uint32_t addr, int len)
 
 int bl_flash_write(uint32_t addr, uint8_t *src, int len)
 {
-    uint8_t* _data = src;
+    uint8_t *_data = src;
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 #ifdef CFG_USE_PSRAM
-    if(IS_PSARAM((uint32_t)src)){
-        _data = (uint8_t*)pvPortMalloc(len);
-        if (NULL == _data) {
+    if (IS_PSARAM((uint32_t)src))
+    {
+        _data = (uint8_t *)pvPortMalloc(len);
+        if (NULL == _data)
+        {
             return -1;
         }
         memcpy(_data, src, len);
@@ -87,7 +90,8 @@ int bl_flash_write(uint32_t addr, uint8_t *src, int len)
     write_csr(mstatus, mstatus_tmp);
 
 #ifdef CFG_USE_PSRAM
-    if(IS_PSARAM((uint32_t)src)){
+    if (IS_PSARAM((uint32_t)src))
+    {
         vPortFree(_data);
     }
 #endif
@@ -97,16 +101,19 @@ int bl_flash_write(uint32_t addr, uint8_t *src, int len)
 
 int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
 {
-    uint8_t* _data = dst;
+    uint8_t *_data = dst;
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
 #ifdef CFG_USE_PSRAM
-    if(IS_PSARAM((uint32_t)dst)){
-        _data = (uint8_t*)pvPortMalloc(len);
-        if (NULL == _data) {
+    if (IS_PSARAM((uint32_t)dst))
+    {
+        _data = (uint8_t *)pvPortMalloc(len);
+        if (NULL == _data)
+        {
             return -1;
         }
     }
@@ -122,7 +129,8 @@ int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
     write_csr(mstatus, mstatus_tmp);
 
 #ifdef CFG_USE_PSRAM
-    if(IS_PSARAM((uint32_t)dst)){
+    if (IS_PSARAM((uint32_t)dst))
+    {
         memcpy(dst, _data, len);
         vPortFree(_data);
     }
@@ -131,22 +139,21 @@ int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
     return 0;
 }
 
-
 #if defined(CFG_ENCRYPT_CPU)
 int ATTR_TCM_SECTION bl_flash_erase_need_lock(uint32_t addr, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     XIP_SFlash_Opt_Enter();
     RomDriver_XIP_SFlash_Erase_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            addr + len - 1
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        addr + len - 1);
     XIP_SFlash_Opt_Exit();
     return 0;
 }
@@ -154,18 +161,18 @@ int ATTR_TCM_SECTION bl_flash_erase_need_lock(uint32_t addr, int len)
 int ATTR_TCM_SECTION bl_flash_write_need_lock(uint32_t addr, uint8_t *src, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     XIP_SFlash_Opt_Enter();
     RomDriver_XIP_SFlash_Write_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            src,
-            len
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        src,
+        len);
     XIP_SFlash_Opt_Exit();
     return 0;
 }
@@ -173,18 +180,18 @@ int ATTR_TCM_SECTION bl_flash_write_need_lock(uint32_t addr, uint8_t *src, int l
 int ATTR_TCM_SECTION bl_flash_read_need_lock(uint32_t addr, uint8_t *dst, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     XIP_SFlash_Opt_Enter();
     RomDriver_XIP_SFlash_Read_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            dst,
-            len
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        dst,
+        len);
     XIP_SFlash_Opt_Exit();
     return 0;
 }
@@ -193,16 +200,16 @@ int ATTR_TCM_SECTION bl_flash_read_need_lock(uint32_t addr, uint8_t *dst, int le
 static inline int bl_flash_erase_need_lock_internal(uint32_t addr, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     RomDriver_XIP_SFlash_Erase_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            addr + len - 1
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        addr + len - 1);
 
     return 0;
 }
@@ -210,17 +217,17 @@ static inline int bl_flash_erase_need_lock_internal(uint32_t addr, int len)
 static inline int bl_flash_write_need_lock_internal(uint32_t addr, uint8_t *src, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     RomDriver_XIP_SFlash_Write_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            src,
-            len
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        src,
+        len);
 
     return 0;
 }
@@ -228,17 +235,17 @@ static inline int bl_flash_write_need_lock_internal(uint32_t addr, uint8_t *src,
 static inline int bl_flash_read_need_lock_internal(uint32_t addr, uint8_t *dst, int len)
 {
     /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
+    if (0 == boot2_flashCfg.flashCfg.mid)
+    {
         return -1;
     }
 
     RomDriver_XIP_SFlash_Read_Need_Lock(
-            &boot2_flashCfg.flashCfg,
-            boot2_flashCfg.flashCfg.ioMode&0xf,
-            addr,
-            dst,
-            len
-    );
+        &boot2_flashCfg.flashCfg,
+        boot2_flashCfg.flashCfg.ioMode & 0xf,
+        addr,
+        dst,
+        len);
 
     return 0;
 }
@@ -246,8 +253,8 @@ static inline int bl_flash_read_need_lock_internal(uint32_t addr, uint8_t *dst, 
 #ifdef CFG_USE_PSRAM
 static inline int bl_flash_erase_need_lock_psram(uint32_t addr, int len)
 {
-    /* Add code in this function need to be careful, 
-     * because the stack in this function is updated 
+    /* Add code in this function need to be careful,
+     * because the stack in this function is updated
      */
     update_sp();
 
@@ -260,8 +267,8 @@ static inline int bl_flash_erase_need_lock_psram(uint32_t addr, int len)
 
 static inline int bl_flash_write_need_lock_psram(uint32_t addr, uint8_t *src, int len)
 {
-    /* Add code in this function need to be careful, 
-     * because the stack in this function is updated 
+    /* Add code in this function need to be careful,
+     * because the stack in this function is updated
      */
     update_sp();
 
@@ -274,8 +281,8 @@ static inline int bl_flash_write_need_lock_psram(uint32_t addr, uint8_t *src, in
 
 static inline int bl_flash_read_need_lock_psram(uint32_t addr, uint8_t *dst, int len)
 {
-    /* Add code in this function need to be careful, 
-     * because the stack in this function is updated 
+    /* Add code in this function need to be careful,
+     * because the stack in this function is updated
      */
     update_sp();
 
@@ -290,7 +297,8 @@ static inline int bl_flash_read_need_lock_psram(uint32_t addr, uint8_t *dst, int
 int bl_flash_erase_need_lock(uint32_t addr, int len)
 {
 #ifdef CFG_USE_PSRAM
-    if (IS_PSARAM(__get_SP())) {
+    if (IS_PSARAM(__get_SP()))
+    {
         return bl_flash_erase_need_lock_psram(addr, len);
     }
 #endif
@@ -301,7 +309,8 @@ int bl_flash_erase_need_lock(uint32_t addr, int len)
 int bl_flash_write_need_lock(uint32_t addr, uint8_t *src, int len)
 {
 #ifdef CFG_USE_PSRAM
-    if (IS_PSARAM(__get_SP())) {
+    if (IS_PSARAM(__get_SP()))
+    {
         return bl_flash_write_need_lock_psram(addr, src, len);
     }
 #endif
@@ -312,7 +321,8 @@ int bl_flash_write_need_lock(uint32_t addr, uint8_t *src, int len)
 int bl_flash_read_need_lock(uint32_t addr, uint8_t *dst, int len)
 {
 #ifdef CFG_USE_PSRAM
-    if (IS_PSARAM(__get_SP())) {
+    if (IS_PSARAM(__get_SP()))
+    {
         return bl_flash_read_need_lock_psram(addr, dst, len);
     }
 #endif
@@ -324,16 +334,15 @@ int bl_flash_read_need_lock(uint32_t addr, uint8_t *dst, int len)
 
 static void _dump_flash_config()
 {
-    blog_info("======= FlashCfg magiccode @%p, code 0x%08lX =======\r\n",
-            &boot2_flashCfg.magic,
-            boot2_flashCfg.magic
-    );
-    blog_info("mid \t\t0x%X\r\n", boot2_flashCfg.flashCfg.mid);
-    blog_info("clkDelay \t0x%X\r\n", boot2_flashCfg.flashCfg.clkDelay);
-    blog_info("clkInvert \t0x%X\r\n", boot2_flashCfg.flashCfg.clkInvert);
-    blog_info("sector size\t%uKBytes\r\n", boot2_flashCfg.flashCfg.sectorSize);
-    blog_info("page size\t%uBytes\r\n", boot2_flashCfg.flashCfg.pageSize);
-    blog_info("---------------------------------------------------------------\r\n");
+    printf("\x1b[32m======= FlashCfg magiccode @%p, code 0x%08lX =======\r\n\x1b[00m",
+           &boot2_flashCfg.magic,
+           boot2_flashCfg.magic);
+    printf("\x1b[32mmid \t\t0x%X\r\n\x1b[00m", boot2_flashCfg.flashCfg.mid);
+    printf("\x1b[32mclkDelay \t0x%X\r\n\x1b[00m", boot2_flashCfg.flashCfg.clkDelay);
+    printf("\x1b[32mclkInvert \t0x%X\r\n\x1b[00m", boot2_flashCfg.flashCfg.clkInvert);
+    printf("\x1b[32msector size\t%uKBytes\r\n\x1b[00m", boot2_flashCfg.flashCfg.sectorSize);
+    printf("\x1b[32mpage size\t%uBytes\r\n\x1b[00m", boot2_flashCfg.flashCfg.pageSize);
+    printf("\x1b[32m---------------------------------------------------------------\r\n\x1b[00m");
 }
 
 int bl_flash_config_update(void)
@@ -343,7 +352,7 @@ int bl_flash_config_update(void)
     return 0;
 }
 
-void* bl_flash_get_flashCfg(void)
+void *bl_flash_get_flashCfg(void)
 {
     return &boot2_flashCfg.flashCfg;
 }
@@ -355,12 +364,13 @@ static inline int bl_flash_read_byxip_internal(uint32_t addr, uint8_t *dst, int 
 
     offset = RomDriver_SF_Ctrl_Get_Flash_Image_Offset();
 
-    if ((addr < offset) || (addr >= 0x1000000)) {
+    if ((addr < offset) || (addr >= 0x1000000))
+    {
         // not support or arg err ?
         return -1;
     }
 
-    xipaddr =  0x23000000 - offset + addr;
+    xipaddr = 0x23000000 - offset + addr;
 
     memcpy(dst, (void *)xipaddr, len);
 
@@ -371,8 +381,8 @@ static inline int bl_flash_read_byxip_internal(uint32_t addr, uint8_t *dst, int 
 static inline int bl_flash_read_byxip_psram(uint32_t addr, uint8_t *dst, int len)
 {
 
-    /* Add code in this function need to be careful, 
-     * because the stack in this function is updated 
+    /* Add code in this function need to be careful,
+     * because the stack in this function is updated
      */
     update_sp();
 
@@ -387,24 +397,29 @@ static inline int bl_flash_read_byxip_psram(uint32_t addr, uint8_t *dst, int len
 int bl_flash_read_byxip(uint32_t addr, uint8_t *dst, int len)
 {
 #ifdef CFG_USE_PSRAM
-    uint8_t* _data = dst;
+    uint8_t *_data = dst;
     int iret;
 
-    if(IS_PSARAM((uint32_t)dst)){
-        _data = (uint8_t*)pvPortMalloc(len);
-        if (NULL == _data) {
+    if (IS_PSARAM((uint32_t)dst))
+    {
+        _data = (uint8_t *)pvPortMalloc(len);
+        if (NULL == _data)
+        {
             return -1;
         }
     }
 
-    if (IS_PSARAM(__get_SP())) {
+    if (IS_PSARAM(__get_SP()))
+    {
         iret = bl_flash_read_byxip_psram(addr, _data, len);
     }
-    else {
+    else
+    {
         iret = bl_flash_read_byxip_internal(addr, _data, len);
     }
 
-    if(IS_PSARAM((uint32_t)dst)){
+    if (IS_PSARAM((uint32_t)dst))
+    {
         memcpy(dst, _data, len);
         vPortFree(_data);
     }
@@ -414,7 +429,6 @@ int bl_flash_read_byxip(uint32_t addr, uint8_t *dst, int len)
 
     return bl_flash_read_byxip_internal(addr, dst, len);
 #endif
-
 }
 
 int ATTR_TCM_SECTION bl_flash_init(void)
@@ -427,8 +441,8 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     int ret = 0;
 
     // patch for SF2 swap
-    *(volatile uint32_t *)0x40000130 |= (1U << 16);  // enable GPIO25 input
-    *(volatile uint32_t *)0x40000134 |= (1U << 16);  // enable GPIO27 input
+    *(volatile uint32_t *)0x40000130 |= (1U << 16); // enable GPIO25 input
+    *(volatile uint32_t *)0x40000134 |= (1U << 16); // enable GPIO27 input
 
     // get flash config from bootheader
     L1C_Cache_Flush_Ext();
@@ -436,7 +450,8 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     L1C_Cache_Flush_Ext();
 
     // update flash config
-    if (pFlashCfg->mid == 0xff) {
+    if (pFlashCfg->mid == 0xff)
+    {
         XIP_SFlash_Opt_Enter();
         XIP_SFlash_State_Save(pFlashCfg, &offset);
 
@@ -446,16 +461,22 @@ int ATTR_TCM_SECTION bl_flash_init(void)
 
         SFlash_GetJedecId(pFlashCfg, (uint8_t *)&jid);
         ret = SF_Cfg_Get_Flash_Cfg_Need_Lock_Ext(jid, pFlashCfg);
-        if (ret == 0) {
-            if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+        if (ret == 0)
+        {
+            if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE)
+            {
                 SFlash_Qspi_Enable(pFlashCfg);
             }
 
-            if (((pFlashCfg->ioMode >> 4) & 0x01) == 1) {
+            if (((pFlashCfg->ioMode >> 4) & 0x01) == 1)
+            {
                 L1C_Set_Wrap(DISABLE);
-            } else {
+            }
+            else
+            {
                 L1C_Set_Wrap(ENABLE);
-                if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+                if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE)
+                {
                     SFlash_SetBurstWrap(pFlashCfg);
                 }
             }

@@ -23,8 +23,8 @@
 #include <lwip/init.h>
 #include "demo.h"
 
-#define ROUTER_SSID "AIOT@FAE"
-#define ROUTER_PWD "fae12345678"
+#define ROUTER_SSID "Seahi-Mo"
+#define ROUTER_PWD "www.msh7073.com"
 
 static wifi_conf_t conf = {
     .country_code = "CN",
@@ -182,4 +182,10 @@ void main()
     tcpip_init(NULL, NULL);
     puts("[OS] proc_main_entry task...\r\n");
     xTaskCreate(proc_main_entry, (char *)"main_entry", 1024, NULL, 15, NULL);
+    while (1)
+    {
+        blog_info("HeapSize=%d ", xPortGetFreeHeapSize());
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }

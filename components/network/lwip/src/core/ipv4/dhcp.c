@@ -117,15 +117,15 @@
 
 #define REBOOT_TRIES                2
 
-#if LWIP_DNS && LWIP_DHCP_MAX_DNS_SERVERS
-#if DNS_MAX_SERVERS > LWIP_DHCP_MAX_DNS_SERVERS
-#define LWIP_DHCP_PROVIDE_DNS_SERVERS LWIP_DHCP_MAX_DNS_SERVERS
-#else
-#define LWIP_DHCP_PROVIDE_DNS_SERVERS DNS_MAX_SERVERS
-#endif
-#else
+// #if LWIP_DNS && LWIP_DHCP_MAX_DNS_SERVERS
+// #if DNS_MAX_SERVERS > LWIP_DHCP_MAX_DNS_SERVERS
+// #define LWIP_DHCP_PROVIDE_DNS_SERVERS LWIP_DHCP_MAX_DNS_SERVERS
+// #else
+// #define LWIP_DHCP_PROVIDE_DNS_SERVERS DNS_MAX_SERVERS
+// #endif
+// #else
 #define LWIP_DHCP_PROVIDE_DNS_SERVERS 0
-#endif
+// #endif
 
 /** Option handling: options are parsed in dhcp_parse_reply
  * and saved in an array where other functions can load them from.

@@ -338,8 +338,8 @@ int main(void) {
 
     serial = serial_new();
 
-    /* Open /dev/ttyUSB0 with baudrate 115200, and defaults of 8N1, no flow control */
-    if (serial_open(serial, "/dev/ttyUSB0", 115200) < 0) {
+    /* Open /dev/ttyUSB0 with baudrate 2000000, and defaults of 8N1, no flow control */
+    if (serial_open(serial, "/dev/ttyUSB0", 2000000) < 0) {
         fprintf(stderr, "serial_open(): %s\n", serial_errmsg(serial));
         exit(1);
     }

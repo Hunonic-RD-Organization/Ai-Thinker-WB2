@@ -9,101 +9,101 @@
 #include <blog.h>
 
 static SPI_Flash_Cfg_Type g_flash_cfg = {
-    .resetCreadCmd=0xff,
-    .resetCreadCmdSize=3,
-    .mid=0xc8,
+    .resetCreadCmd = 0xff,
+    .resetCreadCmdSize = 3,
+    .mid = 0xc8,
 
-    .deBurstWrapCmd=0x77,
-    .deBurstWrapCmdDmyClk=0x3,
-    .deBurstWrapDataMode=SF_CTRL_DATA_4_LINES,
-    .deBurstWrapData=0xF0,
+    .deBurstWrapCmd = 0x77,
+    .deBurstWrapCmdDmyClk = 0x3,
+    .deBurstWrapDataMode = SF_CTRL_DATA_4_LINES,
+    .deBurstWrapData = 0xF0,
 
     /*reg*/
-    .writeEnableCmd=0x06,
-    .wrEnableIndex=0x00,
-    .wrEnableBit=0x01,
-    .wrEnableReadRegLen=0x01,
+    .writeEnableCmd = 0x06,
+    .wrEnableIndex = 0x00,
+    .wrEnableBit = 0x01,
+    .wrEnableReadRegLen = 0x01,
 
-    .qeIndex=1,
-    .qeBit=0x01,
-    .qeWriteRegLen=0x02,
-    .qeReadRegLen=0x1,
+    .qeIndex = 1,
+    .qeBit = 0x01,
+    .qeWriteRegLen = 0x02,
+    .qeReadRegLen = 0x1,
 
-    .busyIndex=0,
-    .busyBit=0x00,
-    .busyReadRegLen=0x1,
-    .releasePowerDown=0xab,
+    .busyIndex = 0,
+    .busyBit = 0x00,
+    .busyReadRegLen = 0x1,
+    .releasePowerDown = 0xab,
 
-    .readRegCmd[0]=0x05,
-    .readRegCmd[1]=0x35,
-    .writeRegCmd[0]=0x01,
-    .writeRegCmd[1]=0x01,
+    .readRegCmd[0] = 0x05,
+    .readRegCmd[1] = 0x35,
+    .writeRegCmd[0] = 0x01,
+    .writeRegCmd[1] = 0x01,
 
-    .fastReadQioCmd=0xeb,
-    .frQioDmyClk=16/8,
-    .cReadSupport=1,
-    .cReadMode=0xA0,
+    .fastReadQioCmd = 0xeb,
+    .frQioDmyClk = 16 / 8,
+    .cReadSupport = 1,
+    .cReadMode = 0xA0,
 
-    .burstWrapCmd=0x77,
-    .burstWrapCmdDmyClk=0x3,
-    .burstWrapDataMode=SF_CTRL_DATA_4_LINES,
-    .burstWrapData=0x40,
-     /*erase*/
-    .chipEraseCmd=0xc7,
-    .sectorEraseCmd=0x20,
-    .blk32EraseCmd=0x52,
-    .blk64EraseCmd=0xd8,
+    .burstWrapCmd = 0x77,
+    .burstWrapCmdDmyClk = 0x3,
+    .burstWrapDataMode = SF_CTRL_DATA_4_LINES,
+    .burstWrapData = 0x40,
+    /*erase*/
+    .chipEraseCmd = 0xc7,
+    .sectorEraseCmd = 0x20,
+    .blk32EraseCmd = 0x52,
+    .blk64EraseCmd = 0xd8,
     /*write*/
-    .pageProgramCmd=0x02,
-    .qpageProgramCmd=0x32,
-    .qppAddrMode=SF_CTRL_ADDR_1_LINE,
+    .pageProgramCmd = 0x02,
+    .qpageProgramCmd = 0x32,
+    .qppAddrMode = SF_CTRL_ADDR_1_LINE,
 
-    .ioMode=SF_CTRL_QIO_MODE,
-    .clkDelay=1,
-    .clkInvert=0x1,
+    .ioMode = SF_CTRL_QIO_MODE,
+    .clkDelay = 1,
+    .clkInvert = 0x1,
 
-    .resetEnCmd=0x66,
-    .resetCmd=0x99,
-    .cRExit=0xff,
-    .wrEnableWriteRegLen=0x00,
+    .resetEnCmd = 0x66,
+    .resetCmd = 0x99,
+    .cRExit = 0xff,
+    .wrEnableWriteRegLen = 0x00,
 
     /*id*/
-    .jedecIdCmd=0x9f,
-    .jedecIdCmdDmyClk=0,
-    .qpiJedecIdCmd=0x9f,
-    .qpiJedecIdCmdDmyClk=0x00,
-    .sectorSize=4,
-    .pageSize=256,
+    .jedecIdCmd = 0x9f,
+    .jedecIdCmdDmyClk = 0,
+    .qpiJedecIdCmd = 0x9f,
+    .qpiJedecIdCmdDmyClk = 0x00,
+    .sectorSize = 4,
+    .pageSize = 256,
 
     /*read*/
-    .fastReadCmd=0x0b,
-    .frDmyClk=8/8,
-    .qpiFastReadCmd =0x0b,
-    .qpiFrDmyClk=8/8,
-    .fastReadDoCmd=0x3b,
-    .frDoDmyClk=8/8,
-    .fastReadDioCmd=0xbb,
-    .frDioDmyClk=0,
-    .fastReadQoCmd=0x6b,
-    .frQoDmyClk=8/8,
+    .fastReadCmd = 0x0b,
+    .frDmyClk = 8 / 8,
+    .qpiFastReadCmd = 0x0b,
+    .qpiFrDmyClk = 8 / 8,
+    .fastReadDoCmd = 0x3b,
+    .frDoDmyClk = 8 / 8,
+    .fastReadDioCmd = 0xbb,
+    .frDioDmyClk = 0,
+    .fastReadQoCmd = 0x6b,
+    .frQoDmyClk = 8 / 8,
 
-    .qpiFastReadQioCmd=0xeb,
-    .qpiFrQioDmyClk=16/8,
-    .qpiPageProgramCmd=0x02,
-    .writeVregEnableCmd=0x50,
+    .qpiFastReadQioCmd = 0xeb,
+    .qpiFrQioDmyClk = 16 / 8,
+    .qpiPageProgramCmd = 0x02,
+    .writeVregEnableCmd = 0x50,
 
     /* qpi mode */
-    .enterQpi=0x38,
-    .exitQpi=0xff,
+    .enterQpi = 0x38,
+    .exitQpi = 0xff,
 
-     /*AC*/
-    .timeEsector=300,
-    .timeE32k=1200,
-    .timeE64k=1200,
-    .timePagePgm=5,
-    .timeCe=20*1000,
-    .pdDelay=20,
-    .qeData=0,
+    /*AC*/
+    .timeEsector = 300,
+    .timeE32k = 1200,
+    .timeE64k = 1200,
+    .timePagePgm = 5,
+    .timeCe = 20 * 1000,
+    .pdDelay = 20,
+    .qeData = 0,
 };
 
 void *ATTR_TCM_SECTION arch_memcpy(void *dst, const void *src, uint32_t n)
@@ -111,7 +111,8 @@ void *ATTR_TCM_SECTION arch_memcpy(void *dst, const void *src, uint32_t n)
     const uint8_t *p = src;
     uint8_t *q = dst;
 
-    while (n--) {
+    while (n--)
+    {
         *q++ = *p++;
     }
 
@@ -138,7 +139,8 @@ BL_Err_Type flash_get_cfg(uint8_t **cfg_addr, uint32_t *len)
  */
 BL_Err_Type ATTR_TCM_SECTION flash_set_qspi_enable(SPI_Flash_Cfg_Type *p_flash_cfg)
 {
-    if ((p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+    if ((p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE)
+    {
         SFlash_Qspi_Enable(p_flash_cfg);
     }
 
@@ -152,11 +154,15 @@ BL_Err_Type ATTR_TCM_SECTION flash_set_qspi_enable(SPI_Flash_Cfg_Type *p_flash_c
  */
 BL_Err_Type ATTR_TCM_SECTION flash_set_l1c_wrap(SPI_Flash_Cfg_Type *p_flash_cfg)
 {
-    if (((p_flash_cfg->ioMode >> 4) & 0x01) == 1) {
+    if (((p_flash_cfg->ioMode >> 4) & 0x01) == 1)
+    {
         L1C_Set_Wrap(DISABLE);
-    } else {
+    }
+    else
+    {
         L1C_Set_Wrap(ENABLE);
-        if ((p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+        if ((p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (p_flash_cfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE)
+        {
             SFlash_SetBurstWrap(p_flash_cfg);
         }
     }
@@ -172,22 +178,24 @@ BL_Err_Type ATTR_TCM_SECTION flash_set_l1c_wrap(SPI_Flash_Cfg_Type *p_flash_cfg)
 BL_Err_Type ATTR_TCM_SECTION flash_get_clkdelay_from_bootheader(SPI_Flash_Cfg_Type *p_flash_cfg)
 {
     SPI_Flash_Cfg_Type flashCfg;
-    uint8_t buf[sizeof(SPI_Flash_Cfg_Type)+8];
-    uint32_t crc,*pCrc;
+    uint8_t buf[sizeof(SPI_Flash_Cfg_Type) + 8];
+    uint32_t crc, *pCrc;
     char magic[] = "FCFG";
 
-    SFlash_Read(p_flash_cfg, (p_flash_cfg->ioMode&0xf), 0, 8, buf, sizeof(SPI_Flash_Cfg_Type)+8);
-    if(BL602_MemCmp(buf, magic,4)==0){
-        crc=BFLB_Soft_CRC32((uint8_t *)buf+4,sizeof(SPI_Flash_Cfg_Type));
-        pCrc=(uint32_t *)(buf+4+sizeof(SPI_Flash_Cfg_Type));
-        if(*pCrc==crc){
-            BL602_MemCpy_Fast(&flashCfg,(uint8_t *)buf+4,sizeof(SPI_Flash_Cfg_Type));
+    SFlash_Read(p_flash_cfg, (p_flash_cfg->ioMode & 0xf), 0, 8, buf, sizeof(SPI_Flash_Cfg_Type) + 8);
+    if (BL602_MemCmp(buf, magic, 4) == 0)
+    {
+        crc = BFLB_Soft_CRC32((uint8_t *)buf + 4, sizeof(SPI_Flash_Cfg_Type));
+        pCrc = (uint32_t *)(buf + 4 + sizeof(SPI_Flash_Cfg_Type));
+        if (*pCrc == crc)
+        {
+            BL602_MemCpy_Fast(&flashCfg, (uint8_t *)buf + 4, sizeof(SPI_Flash_Cfg_Type));
             p_flash_cfg->clkDelay = flashCfg.clkDelay;
             p_flash_cfg->clkInvert = flashCfg.clkInvert;
             return SUCCESS;
         }
     }
-    
+
     return ERROR;
 }
 
@@ -210,7 +218,8 @@ static BL_Err_Type ATTR_TCM_SECTION flash_config_init(SPI_Flash_Cfg_Type *p_flas
     arch_memcpy(jedec_id, (uint8_t *)&jid, 3);
     jid &= 0xFFFFFF;
     ret = SF_Cfg_Get_Flash_Cfg_Need_Lock_Ext(jid, p_flash_cfg);
-    if (ret == SUCCESS) {
+    if (ret == SUCCESS)
+    {
         p_flash_cfg->mid = (jid & 0xff);
     }
     flash_get_clkdelay_from_bootheader(p_flash_cfg);
@@ -262,7 +271,8 @@ int ATTR_TCM_SECTION bl_flash_erase(uint32_t addr, int len)
     uint8_t isAesEnable;
 
     /*We assume mid zeor is illegal*/
-    if (0 == g_flash_cfg.mid) {
+    if (0 == g_flash_cfg.mid)
+    {
         return -1;
     }
 
@@ -270,21 +280,19 @@ int ATTR_TCM_SECTION bl_flash_erase(uint32_t addr, int len)
     XIP_SFlash_Clear_Status_Register_Need_Lock(&g_flash_cfg);
 #if CONF_BL602_USE_1M_FLASH
     XIP_SFlash_Erase_Need_Lock_Ext(
-            &g_flash_cfg,
-            addr,
-            addr + len - 1
-    );
+        &g_flash_cfg,
+        addr,
+        addr + len - 1);
 #else
     XIP_SFlash_Opt_Enter(&isAesEnable);
     RomDriver_XIP_SFlash_Erase_Need_Lock(
-            &g_flash_cfg,
-            addr,
-            addr + len - 1
-    );
+        &g_flash_cfg,
+        addr,
+        addr + len - 1);
     XIP_SFlash_Opt_Exit(isAesEnable);
 #endif
     GLOBAL_IRQ_RESTORE();
-    
+
     return 0;
 }
 
@@ -293,7 +301,8 @@ int ATTR_TCM_SECTION bl_flash_write(uint32_t addr, uint8_t *src, int len)
     uint8_t isAesEnable;
 
     /*We assume mid zeor is illegal*/
-    if (0 == g_flash_cfg.mid) {
+    if (0 == g_flash_cfg.mid)
+    {
         return -1;
     }
 
@@ -301,23 +310,21 @@ int ATTR_TCM_SECTION bl_flash_write(uint32_t addr, uint8_t *src, int len)
     XIP_SFlash_Clear_Status_Register_Need_Lock(&g_flash_cfg);
 #if CONF_BL602_USE_1M_FLASH
     XIP_SFlash_Write_Need_Lock_Ext(
-            &g_flash_cfg,
-            addr,
-            src,
-            len
-    );
+        &g_flash_cfg,
+        addr,
+        src,
+        len);
 #else
     XIP_SFlash_Opt_Enter(&isAesEnable);
     RomDriver_XIP_SFlash_Write_Need_Lock(
-            &g_flash_cfg,
-            addr,
-            src,
-            len
-    );
+        &g_flash_cfg,
+        addr,
+        src,
+        len);
     XIP_SFlash_Opt_Exit(isAesEnable);
 #endif
     GLOBAL_IRQ_RESTORE();
-    
+
     return 0;
 }
 
@@ -326,26 +333,25 @@ int ATTR_TCM_SECTION bl_flash_read(uint32_t addr, uint8_t *dst, int len)
     uint8_t isAesEnable;
 
     /*We assume mid zeor is illegal*/
-    if (0 == g_flash_cfg.mid) {
+    if (0 == g_flash_cfg.mid)
+    {
         return -1;
     }
 
     GLOBAL_IRQ_SAVE();
 #if CONF_BL602_USE_1M_FLASH
     XIP_SFlash_Read_Need_Lock_Ext(
-            &g_flash_cfg,
-            addr,
-            dst,
-            len
-    );
+        &g_flash_cfg,
+        addr,
+        dst,
+        len);
 #else
     XIP_SFlash_Opt_Enter(&isAesEnable);
     RomDriver_XIP_SFlash_Read_Need_Lock(
-            &g_flash_cfg,
-            addr,
-            dst,
-            len
-    );
+        &g_flash_cfg,
+        addr,
+        dst,
+        len);
     XIP_SFlash_Opt_Exit(isAesEnable);
 #endif
     GLOBAL_IRQ_RESTORE();
@@ -358,14 +364,14 @@ static void _dump_flash_config()
     extern uint8_t __boot2_flashCfg_src;
 
     USER_UNUSED(__boot2_flashCfg_src);
-    
-    blog_info("======= FlashCfg magiccode @%p=======\r\n", &__boot2_flashCfg_src);
-    blog_info("mid \t\t0x%X\r\n", g_flash_cfg.mid);
-    blog_info("clkDelay \t0x%X\r\n", g_flash_cfg.clkDelay);
-    blog_info("clkInvert \t0x%X\r\n", g_flash_cfg.clkInvert);
-    blog_info("sector size\t%uKBytes\r\n", g_flash_cfg.sectorSize);
-    blog_info("page size\t%uBytes\r\n", g_flash_cfg.pageSize);
-    blog_info("---------------------------------------------------------------\r\n");
+
+    printf("\x1b[32m======= FlashCfg magiccode @%p=======\r\n\x1b[0m", &__boot2_flashCfg_src);
+    printf("\x1b[32mmid \t\t0x%X\r\n\x1b[0m", g_flash_cfg.mid);
+    printf("\x1b[32mclkDelay \t0x%X\r\n\x1b[0m", g_flash_cfg.clkDelay);
+    printf("\x1b[32mclkInvert \t0x%X\r\n\x1b[0m", g_flash_cfg.clkInvert);
+    printf("\x1b[32msector size\t%uKBytes\r\n\x1b[0m", g_flash_cfg.sectorSize);
+    printf("\x1b[32mpage size\t%uBytes\r\n\x1b[0m", g_flash_cfg.pageSize);
+    printf("\x1b[32m--------------------------------------\r\n\x1b[0m");
 }
 
 int bl_flash_config_update(void)
@@ -375,7 +381,7 @@ int bl_flash_config_update(void)
     return 0;
 }
 
-void* bl_flash_get_flashCfg(void)
+void *bl_flash_get_flashCfg(void)
 {
     return &g_flash_cfg;
 }
@@ -387,15 +393,15 @@ int bl_flash_read_byxip(uint32_t addr, uint8_t *dst, int len)
 
     offset = RomDriver_SF_Ctrl_Get_Flash_Image_Offset();
 
-    if ((addr < offset) || (addr >= 0x1000000)) {
+    if ((addr < offset) || (addr >= 0x1000000))
+    {
         // not support or arg err ?
         return -1;
     }
 
-    xipaddr =  0x23000000 - offset + addr;
+    xipaddr = 0x23000000 - offset + addr;
 
     memcpy(dst, (void *)xipaddr, len);
 
     return 0;
 }
-

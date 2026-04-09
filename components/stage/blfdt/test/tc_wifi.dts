@@ -117,7 +117,7 @@
             compatible = "bl60x_uart";
             path = "/dev/ttyS0";
             reg = <0x40010000 0x100>;
-            baudrate = <115200>;
+            baudrate = <2000000>;
             pin {
                 /*empty here*/
             };
@@ -134,7 +134,7 @@
             compatible = "bl60x_uart";
             path = "/dev/ttyS1";
             reg = <0x40010100 0x100>;
-            baudrate = <115200>;
+            baudrate = <2000000>;
             pin {
                 /*empty here*/
             };

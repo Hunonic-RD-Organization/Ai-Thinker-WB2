@@ -1,0 +1,48 @@
+/**
+ * @file easy_flash.h
+ * @author your name (you@domain.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-05-26
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+#ifndef EASY_FLASH_H
+#define EASY_FLASH_H
+#include <stdbool.h>
+typedef enum
+{
+    FLASH_WIFI_SSID,
+    FLASH_WIFI_PASSWORD,
+    FLASH_WIFI_PMK,
+    FLASH_WIFI_BAND,
+    FLASH_WIFI_CHAN_ID,
+    FLASH_MQTT_HOST,
+    FLASH_MQTT_PORT,
+    FLASH_MQTT_CLIENT_ID,
+    FLASH_MQTT_USERNAME,
+    FLASH_MQTT_PASSWORD,
+    FLASH_HA_DEV_NAME,
+    FLASH_HA_MANUFACTURER,
+    FLASH_HA_AC_TYPE,
+    FLASH_HA_AC_GCODE,
+    FLASH_HA_RESET_NUM,
+    FLASH_BILIBILI_USER_ID,
+    FLASH_BILIBILI_FOLLOWER_COUNT,
+} flash_key_t;
+
+bool flash_save_wifi_info(void *value);
+int flash_get_wifi_info(void *value);
+bool ef_del_key(const char *key);
+bool flash_save_new_temp(float temperature);
+float flash_get_temperature(void);
+
+int flash_save_reset_count(int count);
+int flash_get_reset_count(void);
+
+int flash_save_follower_count(int count);
+int flash_get_follower_count(void);
+int flash_save_bilibili_uid(char *uid);
+int flash_get_bilibili_uid(char *uid);
+#endif

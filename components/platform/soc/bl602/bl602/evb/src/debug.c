@@ -9,6 +9,10 @@
 //FIXME no ugly declare
 extern int bl_uart_data_send(uint8_t id, uint8_t data);
 
+#ifdef PROJECT_HUNONIC_LOG_GPIO
+extern void sw_uart_send_byte(uint8_t id, uint8_t data);
+#endif
+
 enum flag {
 	FL_ZERO		= 0x01,	/* Zero modifier */
 	FL_MINUS	= 0x02,	/* Minus modifier */
@@ -830,7 +834,11 @@ void vprint(const char *fmt, va_list argp)
         if (0 < vsprintf(string, fmt, argp)) {
             while ('\0' != (ch = *(str++))) {
 #if !defined(DISABLE_PRINT)
+	#ifndef PROJECT_HUNONIC_LOG_GPIO
                 bl_uart_data_send(0, ch);
+	#else
+				sw_uart_send_byte(0, ch);
+	#endif
 #endif
             }
         }
@@ -840,7 +848,11 @@ void vprint(const char *fmt, va_list argp)
 int bl_putchar(int c)
 {
 #if !defined(DISABLE_PRINT)
+	#ifndef PROJECT_HUNONIC_LOG_GPIO
     bl_uart_data_send(0, c);
+	#else
+	sw_uart_send_byte(0, c);
+	#endif
 #endif
     return 0;
 }

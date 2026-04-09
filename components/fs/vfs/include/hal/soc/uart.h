@@ -74,7 +74,7 @@ typedef struct {
     hal_uart_mode_t         mode;
 } uart_config_t;
 
-#define UART_READ_CFG_BLOCK   1
+#define UART_READ_CFG_BLOCK 1
 #define UART_READ_CFG_NOBLOCK 2
 
 typedef struct {
@@ -118,7 +118,7 @@ int32_t hal_uart_send_flush(uart_dev_t *uart, uint32_t timeout);
   * set baudrate on a UART interface
   *
   * @param[in]  uart     the UART interface
-  * @param[in]  baud     uart baudrate. eg: 9600、115200...
+  * @param[in]  baud     uart baudrate. eg: 9600、2000000...
   *
   * @return NULL
   */
@@ -128,7 +128,7 @@ void hal_uart_setbaud(uart_dev_t *uart, uint32_t baud);
   * set config on a UART interface
   *
   * @param[in]  uart     the UART interface
-  * @param[in]  baud     uart baudrate. eg: 9600、115200...
+  * @param[in]  baud     uart baudrate. eg: 9600、2000000...
   * @param[in]  baud     uart parity. eg: NO_PARITY, ODD_PARITY, EVEN_PARITY
   *
   * @return NULL
@@ -226,4 +226,3 @@ int32_t hal_uart_notify_unregister(uart_dev_t *uart, hal_uart_int_t type, void (
 
 #endif
 #endif /* HAL_UART_H */
-

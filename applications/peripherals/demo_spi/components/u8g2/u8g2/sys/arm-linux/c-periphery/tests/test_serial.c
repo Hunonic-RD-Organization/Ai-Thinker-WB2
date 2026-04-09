@@ -18,7 +18,8 @@
 
 const char *device;
 
-void test_arguments(void) {
+void test_arguments(void)
+{
     serial_t *serial;
 
     ptest();
@@ -28,13 +29,13 @@ void test_arguments(void) {
     passert(serial != NULL);
 
     /* Invalid data bits (4 and 9) */
-    passert(serial_open_advanced(serial, device, 115200, 4, PARITY_NONE, 1, false, false) == SERIAL_ERROR_ARG);
-    passert(serial_open_advanced(serial, device, 115200, 9, PARITY_NONE, 1, false, false) == SERIAL_ERROR_ARG);
+    passert(serial_open_advanced(serial, device, 2000000, 4, PARITY_NONE, 1, false, false) == SERIAL_ERROR_ARG);
+    passert(serial_open_advanced(serial, device, 2000000, 9, PARITY_NONE, 1, false, false) == SERIAL_ERROR_ARG);
     /* Invalid parity */
-    passert(serial_open_advanced(serial, device, 115200, 8, PARITY_EVEN+1, 1, false, false) == SERIAL_ERROR_ARG);
+    passert(serial_open_advanced(serial, device, 2000000, 8, PARITY_EVEN + 1, 1, false, false) == SERIAL_ERROR_ARG);
     /* Invalid stopbits */
-    passert(serial_open_advanced(serial, device, 115200, 8, PARITY_NONE, 0, false, false) == SERIAL_ERROR_ARG);
-    passert(serial_open_advanced(serial, device, 115200, 8, PARITY_NONE, 3, false, false) == SERIAL_ERROR_ARG);
+    passert(serial_open_advanced(serial, device, 2000000, 8, PARITY_NONE, 0, false, false) == SERIAL_ERROR_ARG);
+    passert(serial_open_advanced(serial, device, 2000000, 8, PARITY_NONE, 3, false, false) == SERIAL_ERROR_ARG);
 
     /* Everything else is fair game, although termios might not like it. */
 
@@ -42,7 +43,8 @@ void test_arguments(void) {
     serial_free(serial);
 }
 
-void test_open_config_close(void) {
+void test_open_config_close(void)
+{
     serial_t *serial;
     uint32_t baudrate;
     unsigned int databits;
@@ -59,11 +61,11 @@ void test_open_config_close(void) {
     serial = serial_new();
     passert(serial != NULL);
 
-    passert(serial_open(serial, device, 115200) == 0);
+    passert(serial_open(serial, device, 2000000) == 0);
 
     /* Check default settings */
     passert(serial_get_baudrate(serial, &baudrate) == 0);
-    passert(baudrate == 115200);
+    passert(baudrate == 2000000);
     passert(serial_get_databits(serial, &databits) == 0);
     passert(databits == 8);
     passert(serial_get_parity(serial, &parity) == 0);
@@ -98,11 +100,11 @@ void test_open_config_close(void) {
     passert(serial_set_xonxoff(serial, true) == 0);
     passert(serial_get_xonxoff(serial, &xonxoff) == 0);
     passert(xonxoff == true);
-    #if 0 /* Test serial port may not support rtscts */
+#if 0 /* Test serial port may not support rtscts */
     passert(serial_set_rtscts(serial, true) == 0);
     passert(serial_get_rtscts(serial, &rtscts) == 0);
     passert(rtscts == true);
-    #endif
+#endif
     passert(serial_set_vmin(serial, 50) == 0);
     passert(serial_get_vmin(serial, &vmin) == 0);
     passert(vmin == 50);
@@ -116,12 +118,13 @@ void test_open_config_close(void) {
     serial_free(serial);
 }
 
-void test_loopback(void) {
+void test_loopback(void)
+{
     serial_t *serial;
     unsigned int count;
     time_t start, stop;
     uint8_t lorem_ipsum[] = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    uint8_t lorem_hugesum[4096*3];
+    uint8_t lorem_hugesum[4096 * 3];
     uint8_t buf[sizeof(lorem_hugesum)];
 
     ptest();
@@ -130,7 +133,7 @@ void test_loopback(void) {
     serial = serial_new();
     passert(serial != NULL);
 
-    passert(serial_open(serial, device, 115200) == 0);
+    passert(serial_open(serial, device, 2000000) == 0);
 
     /* Test write/flush/read */
     passert(serial_write(serial, lorem_ipsum, sizeof(lorem_ipsum)) == sizeof(lorem_ipsum));
@@ -198,13 +201,15 @@ void test_loopback(void) {
     serial_free(serial);
 }
 
-bool getc_yes(void) {
+bool getc_yes(void)
+{
     char buf[4];
     fgets(buf, sizeof(buf), stdin);
     return (buf[0] == 'y' || buf[0] == 'Y');
 }
 
-void test_interactive(void) {
+void test_interactive(void)
+{
     char str[256];
     serial_t *serial;
     uint8_t buf[] = "Hello World";
@@ -240,12 +245,12 @@ void test_interactive(void) {
     printf("Serial transfer baudrate 9600, 8n1 occurred? y/n\n");
     passert(getc_yes());
 
-    passert(serial_set_baudrate(serial, 115200) == 0);
+    passert(serial_set_baudrate(serial, 2000000) == 0);
 
     printf("Press enter to start transfer...");
     getc(stdin);
     passert(serial_write(serial, buf, sizeof(buf)) == sizeof(buf));
-    printf("Serial transfer baudrate 115200, 8n1 occurred? y/n\n");
+    printf("Serial transfer baudrate 2000000, 8n1 occurred? y/n\n");
     passert(getc_yes());
 
     passert(serial_close(serial) == 0);
@@ -254,8 +259,10 @@ void test_interactive(void) {
     serial_free(serial);
 }
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
+int main(int argc, char *argv[])
+{
+    if (argc < 2)
+    {
         fprintf(stderr, "Usage: %s <serial port device>\n\n", argv[0]);
         fprintf(stderr, "[1/4] Arguments test: No requirements.\n");
         fprintf(stderr, "[2/4] Open/close test: Serial port device should be real.\n");
@@ -286,4 +293,3 @@ int main(int argc, char *argv[]) {
     printf("All tests passed!\n");
     return 0;
 }
-

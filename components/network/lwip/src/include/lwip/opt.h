@@ -1109,6 +1109,11 @@
  * The first server can be initialized automatically by defining
  * DNS_SERVER_ADDRESS(ipaddr), where 'ipaddr' is an 'ip_addr_t*'
  */
+// 8.8.8.8
+#define DNS_SERVER_ADDRESS(ipaddr)  ((ipaddr)->addr = 134744072)
+ // 1.1.1.1
+// #define DNS_SERVER_ADDRESS(ipaddr)  ((ipaddr)->addr = 16843009) 
+
 #if !defined DNS_MAX_SERVERS || defined __DOXYGEN__
 #define DNS_MAX_SERVERS                 2
 #endif

@@ -34,83 +34,85 @@
 
 #include "core/common/code_utils.hpp"
 
-namespace ot {
-namespace Url {
-
-otError Url::Init(char *aUrl)
+namespace ot
 {
-    otError error = OT_ERROR_NONE;
-    char *  url   = aUrl;
-
-    mEnd      = aUrl + strlen(aUrl);
-    mProtocol = aUrl;
-
-    url = strstr(aUrl, "://");
-    VerifyOrExit(url != nullptr, error = OT_ERROR_PARSE);
-    *url = '\0';
-    url += sizeof("://") - 1;
-    mPath = url;
-
-    url = strstr(url, "?");
-
-    if (url != nullptr)
+    namespace Url
     {
-        mQuery = ++url;
 
-        for (char *cur = strtok(url, "&"); cur != nullptr; cur = strtok(nullptr, "&"))
+        otError Url::Init(char *aUrl)
         {
-            cur[-1] = '\0';
+            otError error = OT_ERROR_NONE;
+            char *url = aUrl;
+
+            mEnd = aUrl + strlen(aUrl);
+            mProtocol = aUrl;
+
+            url = strstr(aUrl, "://");
+            VerifyOrExit(url != nullptr, error = OT_ERROR_PARSE);
+            *url = '\0';
+            url += sizeof("://") - 1;
+            mPath = url;
+
+            url = strstr(url, "?");
+
+            if (url != nullptr)
+            {
+                mQuery = ++url;
+
+                for (char *cur = strtok(url, "&"); cur != nullptr; cur = strtok(nullptr, "&"))
+                {
+                    cur[-1] = '\0';
+                }
+            }
+            else
+            {
+                mQuery = mEnd;
+            }
+
+        exit:
+            return error;
         }
-    }
-    else
-    {
-        mQuery = mEnd;
-    }
 
-exit:
-    return error;
-}
-
-const char *Url::GetValue(const char *aName, const char *aLastValue) const
-{
-    const char * rval = nullptr;
-    const size_t len  = strlen(aName);
-    const char * start;
-
-    if (aLastValue == nullptr)
-    {
-        start = mQuery;
-    }
-    else
-    {
-        VerifyOrExit(aLastValue > mQuery && aLastValue < mEnd);
-        start = aLastValue + strlen(aLastValue) + 1;
-    }
-
-    while (start < mEnd)
-    {
-        const char *last = nullptr;
-
-        if (!strncmp(aName, start, len))
+        const char *Url::GetValue(const char *aName, const char *aLastValue) const
         {
-            if (start[len] == '=')
+            const char *rval = nullptr;
+            const size_t len = strlen(aName);
+            const char *start;
+
+            if (aLastValue == nullptr)
             {
-                ExitNow(rval = &start[len + 1]);
+                start = mQuery;
             }
-            else if (start[len] == '\0')
+            else
             {
-                ExitNow(rval = &start[len]);
+                VerifyOrExit(aLastValue > mQuery && aLastValue < mEnd);
+                start = aLastValue + strlen(aLastValue) + 1;
             }
+
+            while (start < mEnd)
+            {
+                const char *last = nullptr;
+
+                if (!strncmp(aName, start, len))
+                {
+                    if (start[len] == '=')
+                    {
+                        ExitNow(rval = &start[len + 1]);
+                    }
+                    else if (start[len] == '\0')
+                    {
+                        ExitNow(rval = &start[len]);
+                    }
+                }
+                last = start;
+                start = last + strlen(last) + 1;
+            }
+
+        exit:
+            return rval;
         }
-        last  = start;
-        start = last + strlen(last) + 1;
-    }
 
-exit:
-    return rval;
-}
-
-} // namespace Url
+    } // namespace Url
 } // namespace ot
 
 #ifndef SELF_TEST
@@ -125,13 +127,13 @@ exit:
 
 void TestSimple(void)
 {
-    char         url[] = "spinel:///dev/ttyUSB0?baudrate=115200";
+    char url[] = "spinel:///dev/ttyUSB0?baudrate=2000000";
     ot::Url::Url args;
 
     assert(!args.Init(url));
 
     assert(!strcmp(args.GetPath(), "/dev/ttyUSB0"));
-    assert(!strcmp(args.GetValue("baudrate"), "115200"));
+    assert(!strcmp(args.GetValue("baudrate"), "2000000"));
     assert(args.GetValue("not-exists") == nullptr);
     assert(args.GetValue("last-value-wrong-position", url) == nullptr);
     assert(args.GetValue("last-value-before-url", url - 1) == nullptr);
@@ -142,7 +144,7 @@ void TestSimple(void)
 
 void TestSimpleNoQueryString(void)
 {
-    char         url[] = "spinel:///dev/ttyUSB0";
+    char url[] = "spinel:///dev/ttyUSB0";
     ot::Url::Url args;
 
     assert(!args.Init(url));
@@ -156,9 +158,9 @@ void TestSimpleNoQueryString(void)
 
 void TestEmptyValue(void)
 {
-    char         url[] = "spinel:///dev/ttyUSB0?rtscts&baudrate=115200&verbose&verbose&verbose";
+    char url[] = "spinel:///dev/ttyUSB0?rtscts&baudrate=2000000&verbose&verbose&verbose";
     ot::Url::Url args;
-    const char * arg = nullptr;
+    const char *arg = nullptr;
 
     assert(!args.Init(url));
     assert(!strcmp(args.GetPath(), "/dev/ttyUSB0"));
@@ -174,21 +176,21 @@ void TestEmptyValue(void)
 
 void TestMultipleProtocols(void)
 {
-    char         url[] = "spinel+spi:///dev/ttyUSB0?baudrate=115200";
+    char url[] = "spinel+spi:///dev/ttyUSB0?baudrate=2000000";
     ot::Url::Url args;
 
     assert(!args.Init(url));
     assert(!strcmp(args.GetPath(), "/dev/ttyUSB0"));
-    assert(!strcmp(args.GetValue("baudrate"), "115200"));
+    assert(!strcmp(args.GetValue("baudrate"), "2000000"));
 
     printf("PASS %s\r\n", __func__);
 }
 
 void TestMultipleProtocolsAndDuplicateParameters(void)
 {
-    char         url[] = "spinel+exec:///path/to/ot-rcp?arg=1&arg=arg2&arg=3";
+    char url[] = "spinel+exec:///path/to/ot-rcp?arg=1&arg=arg2&arg=3";
     ot::Url::Url args;
-    const char * arg = nullptr;
+    const char *arg = nullptr;
 
     assert(!args.Init(url));
     assert(!strcmp(args.GetPath(), "/path/to/ot-rcp"));

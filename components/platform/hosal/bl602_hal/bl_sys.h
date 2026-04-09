@@ -12,6 +12,7 @@ typedef enum {
 } BL_RST_REASON_E;
 
 BL_RST_REASON_E bl_sys_rstinfo_get(void);
+BL_RST_REASON_E bl_sys_rstinfo_get_hun(void);
 int bl_sys_rstinfo_set(BL_RST_REASON_E val);
 int bl_sys_rstinfo_getsting(char *info);
 void bl_sys_rstinfo_init(void);

@@ -38,29 +38,29 @@
 const char *otSysGetRadioUrlHelpString(void)
 {
 #if OPENTHREAD_POSIX_CONFIG_RCP_BUS == OT_POSIX_RCP_BUS_SPI
-#define OT_RADIO_URL_HELP_BUS                                                                                  \
-    "    spinel+spi://${PATH_TO_SPI_DEVICE}?${Parameters}\n"                                                   \
-    "Parameters:\n"                                                                                            \
-    "    gpio-int-device[=gpio-device-path]\n"                                                                 \
-    "                                  Specify a path to the Linux sysfs-exported GPIO device for the\n"       \
-    "                                  `I̅N̅T̅` pin. If not specified, `SPI` interface will fall back to\n" \
-    "                                  polling, which is inefficient.\n"                                       \
-    "    gpio-int-line[=line-offset]\n"                                                                        \
-    "                                  The offset index of `I̅N̅T̅` pin for the associated GPIO device.\n"  \
-    "                                  If not specified, `SPI` interface will fall back to polling,\n"         \
-    "                                  which is inefficient.\n"                                                \
-    "    gpio-reset-dev[=gpio-device-path]\n"                                                                  \
-    "                                  Specify a path to the Linux sysfs-exported GPIO device for the\n"       \
-    "                                  `R̅E̅S̅` pin.\n"                                                     \
-    "    gpio-reset-line[=line-offset]"                                                                        \
-    "                                  The offset index of `R̅E̅S̅` pin for the associated GPIO device.\n"  \
-    "    spi-mode[=mode]               Specify the SPI mode to use (0-3).\n"                                   \
-    "    spi-speed[=hertz]             Specify the SPI speed in hertz.\n"                                      \
-    "    spi-cs-delay[=usec]           Specify the delay after C̅S̅ assertion, in µsec.\n"                  \
-    "    spi-reset-delay[=ms]          Specify the delay after R̅E̅S̅E̅T̅ assertion, in milliseconds.\n"  \
-    "    spi-align-allowance[=n]       Specify the maximum number of 0xFF bytes to clip from start of\n"       \
-    "                                  MISO frame. Max value is 16.\n"                                         \
-    "    spi-small-packet=[n]          Specify the smallest packet we can receive in a single transaction.\n"  \
+#define OT_RADIO_URL_HELP_BUS                                                                                 \
+    "    spinel+spi://${PATH_TO_SPI_DEVICE}?${Parameters}\n"                                                  \
+    "Parameters:\n"                                                                                           \
+    "    gpio-int-device[=gpio-device-path]\n"                                                                \
+    "                                  Specify a path to the Linux sysfs-exported GPIO device for the\n"      \
+    "                                  `I̅N̅T̅` pin. If not specified, `SPI` interface will fall back to\n"      \
+    "                                  polling, which is inefficient.\n"                                      \
+    "    gpio-int-line[=line-offset]\n"                                                                       \
+    "                                  The offset index of `I̅N̅T̅` pin for the associated GPIO device.\n"       \
+    "                                  If not specified, `SPI` interface will fall back to polling,\n"        \
+    "                                  which is inefficient.\n"                                               \
+    "    gpio-reset-dev[=gpio-device-path]\n"                                                                 \
+    "                                  Specify a path to the Linux sysfs-exported GPIO device for the\n"      \
+    "                                  `R̅E̅S̅` pin.\n"                                                          \
+    "    gpio-reset-line[=line-offset]"                                                                       \
+    "                                  The offset index of `R̅E̅S̅` pin for the associated GPIO device.\n"       \
+    "    spi-mode[=mode]               Specify the SPI mode to use (0-3).\n"                                  \
+    "    spi-speed[=hertz]             Specify the SPI speed in hertz.\n"                                     \
+    "    spi-cs-delay[=usec]           Specify the delay after C̅S̅ assertion, in µsec.\n"                      \
+    "    spi-reset-delay[=ms]          Specify the delay after R̅E̅S̅E̅T̅ assertion, in milliseconds.\n"           \
+    "    spi-align-allowance[=n]       Specify the maximum number of 0xFF bytes to clip from start of\n"      \
+    "                                  MISO frame. Max value is 16.\n"                                        \
+    "    spi-small-packet=[n]          Specify the smallest packet we can receive in a single transaction.\n" \
     "                                  (larger packets will require two transactions). Default value is 32.\n"
 
 #else
@@ -72,7 +72,7 @@ const char *otSysGetRadioUrlHelpString(void)
     "Parameters:\n"                                                                                  \
     "    uart-parity[=even|odd]         Uart parity config, optional.\n"                             \
     "    uart-stop[=number-of-bits]     Uart stop bit, default is 1.\n"                              \
-    "    uart-baudrate[=baudrate]       Uart baud rate, default is 115200.\n"                        \
+    "    uart-baudrate[=baudrate]       Uart baud rate, default is 2000000.\n"                       \
     "    uart-flow-control              Enable flow control, disabled by default.\n"                 \
     "    uart-reset                     Reset connection after hard resetting RCP(USB CDC ACM).\n"
 
@@ -100,15 +100,17 @@ const char *otSysGetRadioUrlHelpString(void)
            "    skip-rcp-compatibility-check  Skip checking RCP API version and capabilities during initialization.\n";
 }
 
-namespace ot {
-namespace Posix {
-
-RadioUrl::RadioUrl(const char *aUrl)
+namespace ot
 {
-    VerifyOrDie(strnlen(aUrl, sizeof(mUrl)) < sizeof(mUrl), OT_EXIT_INVALID_ARGUMENTS);
-    strncpy(mUrl, aUrl, sizeof(mUrl) - 1);
-    SuccessOrDie(Url::Url::Init(mUrl));
-}
+    namespace Posix
+    {
 
-} // namespace Posix
+        RadioUrl::RadioUrl(const char *aUrl)
+        {
+            VerifyOrDie(strnlen(aUrl, sizeof(mUrl)) < sizeof(mUrl), OT_EXIT_INVALID_ARGUMENTS);
+            strncpy(mUrl, aUrl, sizeof(mUrl) - 1);
+            SuccessOrDie(Url::Url::Init(mUrl));
+        }
+
+    } // namespace Posix
 } // namespace ot
